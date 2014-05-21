@@ -56,7 +56,7 @@ QList<QPrinterInfo> QPrinterInfo::availablePrinters()
 {
     QList<QPrinterInfo> printers;
 
-    DWORD needed = 0;
+    /*DWORD needed = 0;
     DWORD returned = 0;
     if (!EnumPrinters(PRINTER_ENUM_LOCAL | PRINTER_ENUM_CONNECTIONS, NULL, 4, 0, 0, &needed, &returned)) {
         LPBYTE buffer = new BYTE[needed];
@@ -73,14 +73,14 @@ QList<QPrinterInfo> QPrinterInfo::availablePrinters()
             }
         }
         delete [] buffer;
-    }
+    }*/
 
     return printers;
 }
 
 QPrinterInfo QPrinterInfo::defaultPrinter()
 {
-    QString noPrinters(QLatin1String("qt_no_printers"));
+    /*QString noPrinters(QLatin1String("qt_no_printers"));
     wchar_t buffer[256];
     GetProfileString(L"windows", L"device", (wchar_t*)noPrinters.utf16(), buffer, 256);
     QString output = QString::fromWCharArray(buffer);
@@ -90,7 +90,7 @@ QPrinterInfo QPrinterInfo::defaultPrinter()
         QPrinterInfo printerInfo(printerName);
         printerInfo.d_ptr->isDefault = true;
         return printerInfo;
-    }
+    }*/
 
     return QPrinterInfo();
 }
@@ -103,7 +103,7 @@ QList<QPrinter::PaperSize> QPrinterInfo::supportedPaperSizes() const
     if (isNull())
         return paperSizes;
 
-    DWORD size = DeviceCapabilities(reinterpret_cast<const wchar_t*>(d->name.utf16()),
+    /*DWORD size = DeviceCapabilities(reinterpret_cast<const wchar_t*>(d->name.utf16()),
                                     NULL, DC_PAPERS, NULL, NULL);
     if ((int)size != -1) {
         wchar_t *papers = new wchar_t[size];
@@ -112,7 +112,7 @@ QList<QPrinter::PaperSize> QPrinterInfo::supportedPaperSizes() const
         for (int c = 0; c < (int)size; ++c)
             paperSizes.append(mapDevmodePaperSize(papers[c]));
         delete [] papers;
-    }
+    }*/
 
     return paperSizes;
 }

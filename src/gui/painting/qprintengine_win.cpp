@@ -994,7 +994,7 @@ void QWin32PrintEnginePrivate::initialize()
     if (name.isEmpty())
         return;
 
-    txop = QTransform::TxNone;
+    /*txop = QTransform::TxNone;
 
     bool ok = OpenPrinter((LPWSTR)name.utf16(), (LPHANDLE)&hPrinter, 0);
     if (!ok) {
@@ -1043,6 +1043,7 @@ void QWin32PrintEnginePrivate::initialize()
              << " - origin_x" << origin_x << endl
              << " - origin_y" << origin_y << endl;
 #endif
+    */
 }
 
 void QWin32PrintEnginePrivate::initHDC()
@@ -1133,8 +1134,8 @@ void QWin32PrintEnginePrivate::release()
         GlobalUnlock(hMem);
         GlobalFree(hMem);
     }
-    if (hPrinter)
-        ClosePrinter(hPrinter);
+    //if (hPrinter)
+    //    ClosePrinter(hPrinter);
     DeleteDC(hdc);
 
     hdc = 0;
@@ -1149,7 +1150,7 @@ QList<QVariant> QWin32PrintEnginePrivate::queryResolutions() const
     // Read the supported resolutions of the printer.
     QList<QVariant> list;
 
-    DWORD numRes = DeviceCapabilities(reinterpret_cast<const wchar_t *>(name.utf16()),
+    /*DWORD numRes = DeviceCapabilities(reinterpret_cast<const wchar_t *>(name.utf16()),
                                       reinterpret_cast<const wchar_t *>(port.utf16()),
                                       DC_ENUMRESOLUTIONS, 0, 0);
     if (numRes == (DWORD)-1)
@@ -1166,7 +1167,7 @@ QList<QVariant> QWin32PrintEnginePrivate::queryResolutions() const
     }
 
     for (uint i=0; i<numRes; ++i)
-        list.append(int(enumRes[i * 2]));
+        list.append(int(enumRes[i * 2]));*/
 
     return list;
 }
@@ -1338,7 +1339,7 @@ void QWin32PrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &
         int orientation = d->devMode->dmOrientation;
         DWORD needed = 0;
         DWORD returned = 0;
-        if (!EnumForms(d->hPrinter, 1, 0, 0, &needed, &returned)) {
+        /*if (!EnumForms(d->hPrinter, 1, 0, 0, &needed, &returned)) {
             BYTE *forms = (BYTE *) malloc(needed);
             if (EnumForms(d->hPrinter, 1, forms, needed, &needed, &returned)) {
                 for (DWORD i=0; i< returned; ++i) {
@@ -1356,7 +1357,7 @@ void QWin32PrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &
                 }
             }
             free(forms);
-        }
+        }*/
         if (orientation != DMORIENT_PORTRAIT)
             d->paper_size = QSizeF(d->paper_size.height(), d->paper_size.width());
         break;
@@ -1506,13 +1507,13 @@ QVariant QWin32PrintEngine::property(PrintEnginePropertyKey key) const
 
     case PPK_PaperSources:
         {
-            int available = DeviceCapabilities((const wchar_t *)d->name.utf16(),
-                                               (const wchar_t *)d->port.utf16(), DC_BINS, 0, d->devMode);
+            int available = -1; /*DeviceCapabilities((const wchar_t *)d->name.utf16(),
+                                               (const wchar_t *)d->port.utf16(), DC_BINS, 0, d->devMode);*/
 
             if (available <= 0)
                 break;
 
-            wchar_t *data = new wchar_t[available];
+            /*wchar_t *data = new wchar_t[available];
             int count = DeviceCapabilities((const wchar_t *)d->name.utf16(),
                                            (const wchar_t *)d->port.utf16(), DC_BINS, data, d->devMode);
 
@@ -1524,7 +1525,7 @@ QVariant QWin32PrintEngine::property(PrintEnginePropertyKey key) const
             }
             value = out;
 
-            delete [] data;
+            delete [] data;*/
         }
         break;
 
@@ -1617,7 +1618,7 @@ void QWin32PrintEnginePrivate::readDevnames(HGLOBAL globalDevnames)
 void QWin32PrintEnginePrivate::readDevmode(HGLOBAL globalDevmode)
 {
     if (globalDevmode) {
-        DEVMODE *dm = (DEVMODE*) GlobalLock(globalDevmode);
+        /*DEVMODE *dm = (DEVMODE*) GlobalLock(globalDevmode);
         release();
         globalDevMode = globalDevmode;
         devMode = dm;
@@ -1626,7 +1627,7 @@ void QWin32PrintEnginePrivate::readDevmode(HGLOBAL globalDevmode)
 
         num_copies = devMode->dmCopies;
         if (!OpenPrinter((wchar_t*)name.utf16(), &hPrinter, 0))
-            qWarning("QPrinter: OpenPrinter() failed after reading DEVMODE.");
+            qWarning("QPrinter: OpenPrinter() failed after reading DEVMODE.");*/
     }
 
     if (hdc)
@@ -1752,7 +1753,7 @@ void QWin32PrintEnginePrivate::updateCustomPaperSize()
         has_custom_paper_size = true;
         DWORD needed = 0;
         DWORD returned = 0;
-        if (!EnumForms(hPrinter, 1, 0, 0, &needed, &returned)) {
+        /*if (!EnumForms(hPrinter, 1, 0, 0, &needed, &returned)) {
             BYTE *forms = (BYTE *) malloc(needed);
             if (EnumForms(hPrinter, 1, forms, needed, &needed, &returned)) {
                 if (paperSize <= returned) {
@@ -1765,7 +1766,7 @@ void QWin32PrintEnginePrivate::updateCustomPaperSize()
                 }
             }
             free(forms);
-        }
+        }*/
     } else {
         has_custom_paper_size = false;
     }
