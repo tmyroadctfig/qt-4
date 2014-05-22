@@ -27,6 +27,7 @@
 #include "RenderLayer.h"
 #include "RenderView.h"
 #include <wtf/text/StringConcatenate.h>
+#include <cstdlib>
 
 namespace WebCore {
 
@@ -152,7 +153,10 @@ void PrintContext::computePageRectsWithPageSizeInternal(const FloatSize& pageSiz
         inlineDirectionEnd = view->style()->isLeftToRightDirection() ? docRect.maxY() : docRect.y();
     }
 
-    unsigned pageCount = ceilf((float)docLogicalHeight / pageLogicalHeight);
+    // If the difference in height is less than two pixels just assume it is a rounding error
+    int heightDifference = ::std::abs(docLogicalHeight - pageLogicalHeight);
+    unsigned pageCount = heightDifference <= 2 ? 1 : ceilf((float)docLogicalHeight / pageLogicalHeight);
+	
     for (unsigned i = 0; i < pageCount; ++i) {
         int pageLogicalTop = blockDirectionEnd > blockDirectionStart ?
                                 blockDirectionStart + i * pageLogicalHeight : 
